@@ -1,5 +1,4 @@
 require 'rails_helper'
-# require 'json'
 
 describe "Merchants API" do
   it "sends a list of all merchants" do
@@ -14,8 +13,7 @@ describe "Merchants API" do
     expect(merchants.count).to eq(5)
 
     merchants.each do |merchant|
-      expect(merchant[:attributes]).to have_key(:id)
-      expect(merchant[:attributes][:id]).to be_an(Integer)
+      expect(merchant).to have_key(:id)
 
       expect(merchant[:attributes]).to have_key(:name)
       expect(merchant[:attributes][:name]).to be_a(String)
@@ -32,18 +30,11 @@ describe "Merchants API" do
 
     expect(response).to be_successful
 
-    expect(merchant[:attributes]).to have_key(:id)
-    expect(merchant[:attributes][:id]).to be_an(Integer)
+    expect(merchant).to have_key(:id)
 
     expect(merchant[:attributes]).to have_key(:name)
     expect(merchant[:attributes][:name]).to be_a(String)
-    #wrote a test below for what I think Postman is looking for, don't
-    #understand why it isn't working or what its looking for 
-    task :task_name => [:dependent, :tasks] do
-
-    end
     expect(merchant[:attributes].length).to eq(1)
-    # pm.expect(Object.keys(data.attributes).length).to.eq(1);
   end
 
   it "errors if a merchant does NOT exist" do
@@ -58,5 +49,34 @@ describe "Merchants API" do
     expect(response.status).to eq(404)
     expect(parsed_response).to have_key(:errors)
     expect(parsed_response[:errors]).to eq("Not Found")
+  end
+
+  it 'can get all of the merchants items' do
+      merchant = create(:merchant)
+      item_1 = create(:item, merchant_id: merchant.id)
+      item_2 = create(:item, merchant_id: merchant.id)
+      item_3 = create(:item, merchant_id: merchant.id)
+
+      get "/api/v1/merchants/#{merchant.id}/items"
+
+      expect(response).to be_successful
+
+      merchant_items = JSON.parse(response.body, symbolize_names: true)[:data]
+
+      merchant_items.each do |item|
+        expect(item).to have_key(:id)
+
+        expect(item[:attributes]).to have_key(:name)
+        expect(item[:attributes][:name]).to be_a(String)
+
+        expect(item[:attributes]).to have_key(:description)
+        expect(item[:attributes][:description]).to be_a(String)
+
+        expect(item[:attributes]).to have_key(:unit_price)
+        expect(item[:attributes][:unit_price]).to be_a(Float)
+
+        expect(item[:attributes]).to have_key(:merchant_id)
+        # expect(item[:attributes][:merchant_id]).to be_a(Float)
+      end
   end
 end
