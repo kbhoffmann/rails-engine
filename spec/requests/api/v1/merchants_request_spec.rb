@@ -22,10 +22,11 @@ describe "Merchants API" do
     end
   end
 
-  it "can get one merchant by its id" do
-    id = create(:merchant).id
 
-    get "/api/v1/merchants/#{id}"
+  it "can get one merchant by its id" do
+    merchant = create(:merchant)
+
+    get "/api/v1/merchants/#{merchant.id}"
 
     merchant = JSON.parse(response.body, symbolize_names: true)[:data]
 
@@ -36,5 +37,26 @@ describe "Merchants API" do
 
     expect(merchant[:attributes]).to have_key(:name)
     expect(merchant[:attributes][:name]).to be_a(String)
+    #wrote a test below for what I think Postman is looking for, don't
+    #understand why it isn't working or what its looking for 
+    task :task_name => [:dependent, :tasks] do
+
+    end
+    expect(merchant[:attributes].length).to eq(1)
+    # pm.expect(Object.keys(data.attributes).length).to.eq(1);
+  end
+
+  it "errors if a merchant does NOT exist" do
+    merchant = create(:merchant)
+
+    non_existant_id = merchant.id + 1
+
+    get "/api/v1/merchants/#{non_existant_id}"
+
+    parsed_response = JSON.parse(response.body, symbolize_names: true)
+
+    expect(response.status).to eq(404)
+    expect(parsed_response).to have_key(:errors)
+    expect(parsed_response[:errors]).to eq("Not Found")
   end
 end
