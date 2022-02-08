@@ -89,29 +89,51 @@ describe 'Items API' do
      new_item = Item.last
 
      expect(response).to be_successful
-     expect(new_item.name).to eq(item_params[:name])
-     expect(new_item.description).to eq(item_params[:description])
-     expect(new_item.unit_price).to eq(item_params[:unit_price])
-     expect(new_item.merchant_id).to eq(item_params[:merchant_id])
+     expect(new_item.name).to eq("New Item")
+     expect(new_item.description).to eq("This Item is New to the DB")
+     expect(new_item.unit_price).to eq(9.27)
+     expect(new_item.merchant_id).to eq(merchant.id)
+     expect(response.status).to eq(201)
   end
 
-  it 'can edit an item' do
-    merchant = create(:merchant)
-    id = create(:item, merchant_id: merchant.id).id
+  it 'can edit an existing item' do
+    id = create(:item).id
     previous_name = Item.last.name
+    previous_description = Item.last.description
+    previous_unit_price = Item.last.unit_price
+
     item_params = { name: "Updated Name",
                     description: "Updated description",
-                    unit_price: 4.26
+                    unit_price: 4.26,
                   }
+
     headers = {"CONTENT_TYPE" => "application/json"}
 
-    patch "/api/v1/items/#{id}", headers: headers, params: JSON.generate({item: item_params})
+    put "/api/v1/items/#{id}", headers: headers, params: JSON.generate({item: item_params})
 
     item = Item.find_by(id: id)
 
     expect(response).to be_successful
     expect(item.name).to_not eq(previous_name)
     expect(item.name).to eq("Updated Name")
+    expect(item.description).to_not eq(previous_description)
+    expect(item.description).to eq("Updated description")
+    expect(item.unit_price).to_not eq(previous_unit_price)
+    expect(item.unit_price).to eq(4.26)
+  end
+
+  it 'raises an error if the merchant does not exist' do
+    item = create(:item)
+
+    item_params = { merchant_id: 0 }
+
+    headers = {"CONTENT_TYPE" => "application/json"}
+
+    put "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate({item: item_params})
+
+    item = Item.find_by(id: item.id)
+
+    expect(response.status).to eq(400)
   end
 
   it 'can delete an item' do

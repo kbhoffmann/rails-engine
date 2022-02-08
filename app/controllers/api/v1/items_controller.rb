@@ -12,15 +12,23 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def create
-    render json: Item.create(item_params)
+    #add sad path with error if unable to save item
+    render json: ItemSerializer.new(Item.create(item_params)), status: 201
   end
 
   def update
-    render json: Item.update(params[:id], item_params)
+    item = Item.find(params[:id])
+
+     if item.update(item_params)
+       render json: ItemSerializer.new(item)
+     else
+       render status: 400
+     end
+
   end
 
   def destroy
-    render json: Item.delete(params[:id])
+    Item.find(params[:id]).destroy
   end
 
   private
