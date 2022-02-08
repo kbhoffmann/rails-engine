@@ -12,7 +12,7 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def create
-    #add sad path with error if unable to save item
+    #add sad path with error if unable to save item, 400 status???
     render json: ItemSerializer.new(Item.create(item_params)), status: 201
   end
 

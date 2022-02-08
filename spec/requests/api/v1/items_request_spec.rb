@@ -96,6 +96,25 @@ describe 'Items API' do
      expect(response.status).to eq(201)
   end
 
+  xit 'shows an error if an item cannot be created' do
+    merchant = create(:merchant)
+
+    item_params = ({
+                    name: "New Item",
+                    description: 33,
+                    unit_price: 9.27,
+                    merchant_id: merchant.id
+                  })
+                  headers = {"CONTENT_TYPE" => "application/json"}
+
+     post '/api/v1/items', headers: headers, params: JSON.generate(item: item_params)
+
+     new_item = Item.last
+
+     expect(response).to_not be_successful
+     expect(response.status).to eq(400)
+  end
+
   it 'can edit an existing item' do
     id = create(:item).id
     previous_name = Item.last.name
@@ -154,9 +173,20 @@ describe 'Items API' do
     expect{Item.find(item_2.id)}.to raise_error(ActiveRecord::RecordNotFound)
   end
 
+  it 'can get the merchant data for a given item ID' do
+    merchant = create(:merchant, name: "The Store")
 
+    item = create(:item, merchant_id: merchant.id)
 
+    get "/api/v1/items/#{item.id}/merchant"
 
-  xit 'can get the merchant data for a given item ID' do
+    expect(response).to be_successful
+
+    merchant = JSON.parse(response.body, symbolize_names: true)[:data]
+
+    expect(merchant).to have_key(:id)
+    expect(merchant).to have_key(:attributes)
+    expect(merchant[:attributes][:name]).to eq("The Store")
+    expect(merchant[:attributes][:name]).to be_a(String)
   end
 end
