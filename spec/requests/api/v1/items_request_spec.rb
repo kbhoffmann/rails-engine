@@ -73,19 +73,35 @@ describe 'Items API' do
     expect(parsed_response[:errors]).to eq("Not Found")
   end
 
-  xit 'can create an item' do
+  it 'can create an item' do
+    merchant = create(:merchant)
 
+    item_params = ({
+                    name: "New Item",
+                    description: "This Item is New to the DB",
+                    unit_price: 9.27,
+                    merchant_id: merchant.id
+                  })
+                  headers = {"CONTENT_TYPE" => "application/json"}
+
+     post '/api/v1/items', headers: headers, params: JSON.generate(item: item_params)
+
+     new_item = Item.last
+
+     expect(response).to be_successful
+     expect(new_item.name).to eq(item_params[:name])
+     expect(new_item.description).to eq(item_params[:description])
+     expect(new_item.unit_price).to eq(item_params[:unit_price])
+     expect(new_item.merchant_id).to eq(item_params[:merchant_id])
   end
 
   xit 'can edit an item' do
-
+    
   end
 
   xit 'can delete an item' do
-
   end
 
   xit 'can get the merchant data for a given item ID' do
-
-  end 
+  end
 end

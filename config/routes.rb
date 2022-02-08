@@ -3,7 +3,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :merchants, only: [:index, :show]
         get '/merchants/:id/items', to: 'merchant_items#index'
-      resources :items, only: [:index, :show]
+      resources :items, only: [:index, :show, :create]
     end
   end
 end
