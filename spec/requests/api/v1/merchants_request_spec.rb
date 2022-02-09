@@ -20,6 +20,19 @@ describe "Merchants API" do
     end
   end
 
+  it "sends an array of data even when there are no merchants" do
+    create_list(:merchant, 0)
+
+    get '/api/v1/merchants'
+
+    expect(response).to be_successful
+
+    no_merchants = JSON.parse(response.body, symbolize_names: true)[:data]
+    
+    expect(no_merchants.count).to eq(0)
+    expect(no_merchants).to be_an(Array)
+  end
+
 
   it "can get one merchant by its id" do
     merchant = create(:merchant)
