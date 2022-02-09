@@ -64,31 +64,31 @@ describe "Merchants API" do
   end
 
   it 'can get all of the merchants items' do
-      merchant = create(:merchant)
-      item_1 = create(:item, merchant_id: merchant.id)
-      item_2 = create(:item, merchant_id: merchant.id)
-      item_3 = create(:item, merchant_id: merchant.id)
+    merchant = create(:merchant)
+    item_1 = create(:item, merchant_id: merchant.id)
+    item_2 = create(:item, merchant_id: merchant.id)
+    item_3 = create(:item, merchant_id: merchant.id)
 
-      get "/api/v1/merchants/#{merchant.id}/items"
+    get "/api/v1/merchants/#{merchant.id}/items"
 
-      expect(response).to be_successful
+    expect(response).to be_successful
 
-      merchant_items = JSON.parse(response.body, symbolize_names: true)[:data]
+    merchant_items = JSON.parse(response.body, symbolize_names: true)[:data]
 
-      merchant_items.each do |item|
-        expect(item).to have_key(:id)
+    merchant_items.each do |item|
+      expect(item).to have_key(:id)
 
-        expect(item[:attributes]).to have_key(:name)
-        expect(item[:attributes][:name]).to be_a(String)
+      expect(item[:attributes]).to have_key(:name)
+      expect(item[:attributes][:name]).to be_a(String)
 
-        expect(item[:attributes]).to have_key(:description)
-        expect(item[:attributes][:description]).to be_a(String)
+      expect(item[:attributes]).to have_key(:description)
+      expect(item[:attributes][:description]).to be_a(String)
 
-        expect(item[:attributes]).to have_key(:unit_price)
-        expect(item[:attributes][:unit_price]).to be_a(Float)
+      expect(item[:attributes]).to have_key(:unit_price)
+      expect(item[:attributes][:unit_price]).to be_a(Float)
 
-        expect(item[:attributes]).to have_key(:merchant_id)
-        # expect(item[:attributes][:merchant_id]).to be_a(Float)
-      end
+      expect(item[:attributes]).to have_key(:merchant_id)
+      # expect(item[:attributes][:merchant_id]).to be_a(Float)
+    end
   end
 end
