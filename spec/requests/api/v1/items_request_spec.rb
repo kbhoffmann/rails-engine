@@ -111,12 +111,37 @@ describe 'Items API' do
      expect(response.status).to eq(201)
   end
 
-  xit 'shows an error if an item cannot be created' do
+  it 'ignores unallowed attributes' do
     merchant = create(:merchant)
 
     item_params = ({
                     name: "New Item",
-                    description: 33,
+                    description: "This Item is New to the DB",
+                    unit_price: 9.27,
+                    color: "green",
+                    merchant_id: merchant.id
+                  })
+                  headers = {"CONTENT_TYPE" => "application/json"}
+
+     post '/api/v1/items', headers: headers, params: JSON.generate(item: item_params)
+
+     new_item = Item.last
+
+     expect(response).to be_successful
+     expect(new_item.name).to eq("New Item")
+     expect(new_item.description).to eq("This Item is New to the DB")
+     expect(new_item.unit_price).to eq(9.27)
+     expect(new_item.merchant_id).to eq(merchant.id)
+     expect(new_item.attributes.keys).to_not eq(:color)
+     expect(response.status).to eq(201)
+  end
+
+  xit 'shows an error if an attribute is missing' do
+    merchant = create(:merchant)
+
+    item_params = ({
+                    name: "New Item",
+                    description: "",
                     unit_price: 9.27,
                     merchant_id: merchant.id
                   })

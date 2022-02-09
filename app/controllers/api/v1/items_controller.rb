@@ -25,7 +25,6 @@ class Api::V1::ItemsController < ApplicationController
      else
        render status: 400
      end
-
   end
 
   def destroy
