@@ -28,26 +28,25 @@ describe "Merchants API" do
     expect(response).to be_successful
 
     no_merchants = JSON.parse(response.body, symbolize_names: true)[:data]
-    
+
     expect(no_merchants.count).to eq(0)
     expect(no_merchants).to be_an(Array)
   end
-
 
   it "can get one merchant by its id" do
     merchant = create(:merchant)
 
     get "/api/v1/merchants/#{merchant.id}"
 
-    merchant = JSON.parse(response.body, symbolize_names: true)[:data]
+    merchant_data = JSON.parse(response.body, symbolize_names: true)
 
     expect(response).to be_successful
-
-    expect(merchant).to have_key(:id)
-
-    expect(merchant[:attributes]).to have_key(:name)
-    expect(merchant[:attributes][:name]).to be_a(String)
-    expect(merchant[:attributes].length).to eq(1)
+    expect(merchant_data.count).to eq(1)
+    expect(merchant_data[:data]).to have_key(:id)
+    expect(merchant_data[:data]).to have_key(:attributes)
+    expect(merchant_data[:data][:attributes]).to have_key(:name)
+    expect(merchant_data[:data][:attributes][:name]).to be_a(String)
+    expect(merchant_data[:data][:attributes].length).to eq(1)
   end
 
   it "errors if a merchant does NOT exist" do
