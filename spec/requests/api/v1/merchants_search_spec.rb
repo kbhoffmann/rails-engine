@@ -21,25 +21,6 @@ describe 'Merchant Search API endpoint' do
     expect(parsed_search[:data][:attributes].length).to eq(1)
   end
 
-  it 'can return another merchant' do
-    merchant_1 = create(:merchant, name: "Burt's Shop", id: 5)
-    merchant_2 = create(:merchant, name: "Burt's Bazaar", id: 7)
-    search = "Burt's"
-
-    get "/api/v1/merchants/find?name=#{search}"
-
-    parsed_search = JSON.parse(response.body, symbolize_names: true)
-
-    expect(response).to be_successful
-
-    expect(parsed_search.length).to eq(1)
-    expect(parsed_search[:data]).to have_key(:id)
-    expect(parsed_search[:data][:id]).to eq("5")
-    expect(parsed_search[:data][:attributes]).to have_key(:name)
-    expect(parsed_search[:data][:attributes][:name]).to eq("Burt's Shop")
-    expect(parsed_search[:data][:attributes].length).to eq(1)
-  end
-
   it 'returns nil if merchant does not exist' do
     merchant_1 = create(:merchant, name: "ABC")
     merchant_2 = create(:merchant, name: "DEF")
