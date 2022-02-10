@@ -17,4 +17,8 @@ class Item < ApplicationRecord
   def self.find_all_items_by_max_price(max_price)
     Item.where('unit_price <= 150')
   end
+
+  def self.find_all_items_by_price_range(min_price, max_price)
+    Item.where('unit_price >= 50 AND unit_price <= 150')
+  end
 end
