@@ -49,10 +49,10 @@ describe 'All Items Search API endpoint' do
     item_8 = merchant_2.items.create!(name: "Item 8 Name", description: "Item 8 Description", unit_price: 300)
     item_9 = merchant_2.items.create!(name: "Item 9 Name", description: "Item 9 Description", unit_price: 50)
     item_10 = merchant_2.items.create!(name: "Item 10 Name", description: "Item 9 Description", unit_price: 10)
-    # GET /api/v1/items/find_all?min_price=50
+    
     search = "min_price=50"
     get "/api/v1/items/find_all?#{search}"
-    # search = "min_price=50"
+
     items = JSON.parse(response.body, symbolize_names: true)[:data]
 
     expect(response).to be_successful
@@ -70,18 +70,30 @@ describe 'All Items Search API endpoint' do
     end
   end
 
-  xit 'returns all itmes that match max price search' do
-    # GET /api/v1/items/find_all?max_price=150
-    # search = "max_price=150"
+  it 'returns all items that match max price search' do
+    merchant_1 = create(:merchant)
+    item_1 = merchant_1.items.create!(name: "Item 1 Name", description: "Item 1 Description", unit_price: 50)
+    item_2 = merchant_1.items.create!(name: "Item 2 Name", description: "Item 2 Description", unit_price: 25)
+    item_3 = merchant_1.items.create!(name: "Item 3 Name", description: "Item 3 Description", unit_price: 30)
+    item_4 = merchant_1.items.create!(name: "Item 4 Name", description: "Item 4 Description", unit_price: 175)
+    merchant_2 = create(:merchant)
+    item_5 = merchant_2.items.create!(name: "Item 5 Name", description: "Item 5 Description", unit_price: 150)
+    item_6 = merchant_2.items.create!(name: "Item 6 Name", description: "Item 6 Description", unit_price: 40)
+    item_7 = merchant_2.items.create!(name: "Item 7 Name", description: "Item 7 Description", unit_price: 200)
+    merchant_3 = create(:merchant)
+    item_8 = merchant_2.items.create!(name: "Item 8 Name", description: "Item 8 Description", unit_price: 300)
+    item_9 = merchant_2.items.create!(name: "Item 9 Name", description: "Item 9 Description", unit_price: 50)
+    item_10 = merchant_2.items.create!(name: "Item 10 Name", description: "Item 9 Description", unit_price: 10)
+
     search = "max_price=150"
 
-    get "/api/vi/items/find_all?#{search}"
+    get "/api/v1/items/find_all?#{search}"
 
     items = JSON.parse(response.body, symbolize_names: true)[:data]
 
     expect(response).to be_successful
 
-    expect(items.length).to eq()
+    expect(items.length).to eq(7)
 
     items.each do |item|
         expect(item).to have_key(:id)
@@ -98,7 +110,7 @@ describe 'All Items Search API endpoint' do
     # GET /api/v1/items/find_all?max_price=150&min_price=50
     # search = "max_price=150&min_price=50"
     search = "max_price=150&min_price=50"
-    get "/api/vi/items/find_all?#{search}"
+    get "/api/v1/items/find_all?#{search}"
 
     items = JSON.parse(response.body, symbolize_names: true)[:data]
 
