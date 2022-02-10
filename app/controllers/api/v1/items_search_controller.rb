@@ -1,12 +1,15 @@
 class Api::V1::ItemsSearchController < ApplicationController
   def index
-    #break into if statements for params or do in model to keep controller skinny
-    #if params[:name]
-    items = Item.find_all_items_by_name(params[:name])
-    if items.nil?
-      render json: {data: {message: "No items match your search"}}
-    else
+    if params[:name]
+      items = Item.find_all_items_by_name(params[:name])
       render json: ItemSerializer.new(items)
-    end
+    elsif params[:min_price]
+      items = Item.find_all_items_by_min_price(params[:min_price])
+      render json: ItemSerializer.new(items)
+    # if items.nil?
+    #   render json: {data: {message: "No items match your search"}}
+    # else
+    #   render json: ItemSerializer.new(items)
+     end
   end
 end

@@ -6,7 +6,11 @@ class Item < ApplicationRecord
   #validate numericality too
   validates :merchant_id, presence: true
 
-  def self.find_all_items_by_name(search)
-    Item.where("name ILIKE ?", "%#{search}%" )
+  def self.find_all_items_by_name(name)
+    Item.where("name ILIKE ?", "%#{name}%" )
+  end
+
+  def self.find_all_items_by_min_price(min_price)
+    Item.where('unit_price >= 50')
   end
 end
