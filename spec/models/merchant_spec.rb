@@ -6,14 +6,14 @@ describe Merchant, type: :model do
   end
 
   describe 'class methods' do
-    it 'can find a merchant by name' do
-      merchant_1 = create(:merchant, name: "Burt's Store", id:1)
-      merchant_2 = create(:merchant, name: "Burt's Bazaar", id:2)
+    it 'can return 1 merchant by name, case sensitive' do
+      merchant_1 = create(:merchant, name: "Turing", id:1)
+      merchant_2 = create(:merchant, name: "Ring World", id:2)
 
-      search = "Bur"
+      search = "Rin"
 
-      expect(Merchant.find_merchant_by_name(search).first.name).to eq("Burt's Store")
-      expect(Merchant.find_merchant_by_name(search).first.id).to eq(1)
+      expect(Merchant.find_merchant_by_name(search).first.name).to eq("Ring World")
+      expect(Merchant.find_merchant_by_name(search).first.id).to eq(2)
       expect(Merchant.find_merchant_by_name(search).length).to eq(1)
     end
   end
