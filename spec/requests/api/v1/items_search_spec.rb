@@ -5,16 +5,35 @@ describe 'All Items Search API endpoint' do
     merchant_1 = create(:merchant)
     item_1 = merchant_1.items.create!(name: "Rings", description: "Item 1 Description", unit_price: 200)
     item_2 = merchant_1.items.create!(name: "Titanium ring", description: "Item 2 Description", unit_price: 300)
-    item_3 = merchant_1.items.create!(name: "Manufacturing Product", description: "Item 3 Description", unit_price: 1000)
+    item_3 = merchant_1.items.create!(name: "NOPE 1", description: "Item 3 Description", unit_price: 300)
+    item_4 = merchant_1.items.create!(name: "Manufacturing Product", description: "Item 4 Description", unit_price: 1000)
     merchant_2 = create(:merchant)
-    item_4 = merchant_2.items.create!(name: "Loud Ringing Bell", description: "Item 4 Description", unit_price: 500)
-    item_5 = merchant_2.items.create!(name: "Stringy mop", description: "Item 5 Description", unit_price: 400)
-    item_5 = merchant_2.items.create!(name: "string thing", description: "Item 5 Description", unit_price: 100)
-  
+    item_5 = merchant_2.items.create!(name: "Loud Ringing Bell", description: "Item 5 Description", unit_price: 500)
+    item_6 = merchant_2.items.create!(name: "Stringy mop", description: "Item 6 Description", unit_price: 400)
+    item_7 = merchant_2.items.create!(name: "NOPE 2", description: "Item 7 Description", unit_price: 400)
+    merchant_3 = create(:merchant)
+    item_8 = merchant_2.items.create!(name: "NOPE 3", description: "Item 8 Description", unit_price: 100)
+    item_9 = merchant_2.items.create!(name: "string thing", description: "Item 9 Description", unit_price: 100)
+
     search = "name=ring"
+
     get "/api/v1/items/find_all?#{search}"
 
-    items = JSON.parse(response.body, symbolize_names: true)
+    items = JSON.parse(response.body, symbolize_names: true)[:data]
+
+    expect(response).to be_successful
+
+    expect(items.length).to eq(6)
+
+    items.each do |item|
+        expect(item).to have_key(:id)
+        expect(item).to have_key(:attributes)
+        expect(item[:attributes]).to have_key(:name)
+        expect(item[:attributes]).to have_key(:description)
+        expect(item[:attributes]).to have_key(:unit_price)
+        expect(item[:attributes]).to have_key(:merchant_id)
+        expect(item[:attributes].length).to eq(4)
+    end
   end
 
   xit 'returns all items that match min price search' do
