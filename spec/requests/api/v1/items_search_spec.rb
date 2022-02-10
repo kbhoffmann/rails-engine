@@ -121,8 +121,7 @@ describe 'All Items Search API endpoint' do
     item_9 = merchant_3.items.create!(name: "Item 9 Name", description: "Item 9 Description", unit_price: 50)
     item_10 = merchant_3.items.create!(name: "Item 10 Name", description: "Item 10 Description", unit_price: 10)
     item_11 = merchant_3.items.create!(name: "Item 11 Name", description: "Item 11 Description", unit_price: 100)
-    # GET /api/v1/items/find_all?max_price=150&min_price=50
-    # search = "max_price=150&min_price=50"
+
     search = "max_price=150&min_price=50"
 
     get "/api/v1/items/find_all?#{search}"
@@ -144,20 +143,20 @@ describe 'All Items Search API endpoint' do
     end
   end
 
+  it 'returns nil if an item does not exist' do
+    merchant_1 = create(:merchant, name: "ABC")
+    merchant_2 = create(:merchant, name: "DEF")
 
+    name = "XYZ"
 
-  xit 'returns nil if an item does not exist' do
-    # merchant_1 = create(:merchant, name: "ABC")
-    # merchant_2 = create(:merchant, name: "DEF")
-
-    search = "XYZ"
-
-    get "/api/v1/items/find?name=#{search}"
+    get "/api/v1/items/find_all?name=#{name}"
 
     parsed_search = JSON.parse(response.body, symbolize_names: true)
 
     expect(parsed_search).to have_key(:data)
-    expect(parsed_search[:data][:message]).to eq("No items match your search")
+    expect(parsed_search[:data]).to be_an(Array)
+    expect(parsed_search[:data].length).to eq(0)
+    # expect(parsed_search[:message]).to eq("No items match your search")
     #change message and the parsed_search variable in merchant
   end
 end
