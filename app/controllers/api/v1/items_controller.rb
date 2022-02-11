@@ -8,8 +8,7 @@ class Api::V1::ItemsController < ApplicationController
     if Item.exists?(params[:id])
       render json: ItemSerializer.new(Item.find(params[:id]))
     else
-      # render json: { errors: {title: "Not Found", details: "This Item does not exist", status: 404}}, status: 404
-      render status: 404
+      render json: {data: {message: "This item does not exist"}}, status: 404
     end
   end
 
@@ -18,8 +17,7 @@ class Api::V1::ItemsController < ApplicationController
     if item.save
       render json: ItemSerializer.new(item), status: 201
     else
-      # render json: { errors: {title: "Bad Request", details: "An Item cannot be created as requested", status: 400} }, status: 400
-      render status: 400
+      render json: {data: {message: "This item cannot be created"}}, status: 400
     end
   end
 
@@ -28,7 +26,7 @@ class Api::V1::ItemsController < ApplicationController
      if item.update(item_params)
        render json: ItemSerializer.new(item)
      else
-       render status: 400
+       render json: {data: {message: "This item cannot be edited"}}, status: 400
      end
   end
 
@@ -36,10 +34,9 @@ class Api::V1::ItemsController < ApplicationController
     if Item.exists?(params[:id])
       Item.find(params[:id]).destroy
     else
-      render status: 404
+      render json: {data: {message: "This item cannot be found"}}, status: 404
     end
-    #destroy the invoice if this is the only item on the invoice
-      #dependant, destroy
+
   end
 
   private

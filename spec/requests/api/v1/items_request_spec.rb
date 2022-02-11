@@ -81,8 +81,7 @@ describe 'Items API' do
 
     get "/api/v1/items/#{non_existant_id}"
 
-    # parsed_response = JSON.parse(response.body, symbolize_names: true)
-    # ---->   uncomment if needing to see detailed error
+    parsed_response = JSON.parse(response.body, symbolize_names: true)
 
     expect(response.status).to eq(404)
   end
@@ -173,11 +172,6 @@ describe 'Items API' do
 
      post '/api/v1/items', headers: headers, params: JSON.generate(item: item_params)
 
-     #works without parsing, still need to parse the response?????
-     #just need to parse to see the errors???
-     # JSON.parse(response.body, symbolize_names: true)[:data]
-
-     # expect(response).to_not be_successful
      expect(response.status).to eq(400)
   end
 

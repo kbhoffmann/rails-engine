@@ -29,7 +29,8 @@ describe 'Merchant Search API endpoint' do
     get "/api/v1/merchants/find?name=#{search}"
 
     parsed_search = JSON.parse(response.body, symbolize_names: true)
+    
     expect(parsed_search).to have_key(:data)
-    expect(parsed_search[:data][:message]).to eq("Undefined")
+    expect(parsed_search[:data][:message]).to eq("Unable to find merchant #{search}")
   end
 end

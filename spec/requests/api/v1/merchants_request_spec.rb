@@ -59,8 +59,8 @@ describe "Merchants API" do
     parsed_response = JSON.parse(response.body, symbolize_names: true)
 
     expect(response.status).to eq(404)
-    expect(parsed_response).to have_key(:errors)
-    expect(parsed_response[:errors]).to eq("Not Found")
+    expect(parsed_response[:data]).to have_key(:message)
+    expect(parsed_response[:data][:message]).to eq("Merchant not found")
   end
 
   it 'can get all of the merchants items' do
