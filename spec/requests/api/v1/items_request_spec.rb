@@ -81,10 +81,11 @@ describe 'Items API' do
 
     get "/api/v1/items/#{non_existant_id}"
 
-    # parsed_response = JSON.parse(response.body, symbolize_names: true)
-    # ---->   uncomment if needing to see detailed error
+    parsed_response = JSON.parse(response.body, symbolize_names: true)
 
     expect(response.status).to eq(404)
+    expect(parsed_response[:data]).to have_key(:message)
+    expect(parsed_response[:data][:message]).to eq("This item does not exist")
   end
 
   it 'can create an item' do
@@ -173,12 +174,11 @@ describe 'Items API' do
 
      post '/api/v1/items', headers: headers, params: JSON.generate(item: item_params)
 
-     #works without parsing, still need to parse the response?????
-     #just need to parse to see the errors???
-     # JSON.parse(response.body, symbolize_names: true)[:data]
+     parsed_response = JSON.parse(response.body, symbolize_names: true)
 
-     # expect(response).to_not be_successful
      expect(response.status).to eq(400)
+     expect(parsed_response[:data]).to have_key(:message)
+     expect(parsed_response[:data][:message]).to eq("This item cannot be created")
   end
 
   it 'can edit an existing item' do
@@ -221,7 +221,11 @@ describe 'Items API' do
 
     patch "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate({item: item_params})
 
+    parsed_response = JSON.parse(response.body, symbolize_names: true)
+
     expect(response.status).to eq(400)
+    expect(parsed_response[:data]).to have_key(:message)
+    expect(parsed_response[:data][:message]).to eq("This item cannot be edited")
   end
 
   it 'can delete an item' do
@@ -249,7 +253,11 @@ describe 'Items API' do
 
     delete "/api/v1/items/#{item_1.id + 1}"
 
+    parsed_response = JSON.parse(response.body, symbolize_names: true)
+
     expect(response.status).to eq(404)
+    expect(parsed_response[:data]).to have_key(:message)
+    expect(parsed_response[:data][:message]).to eq("This item cannot be found")
   end
 
   it 'can get the merchant data for a given item ID' do
