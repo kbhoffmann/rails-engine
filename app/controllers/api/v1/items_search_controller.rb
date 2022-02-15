@@ -1,6 +1,6 @@
 class Api::V1::ItemsSearchController < ApplicationController
   def index
-    # items = if…end
+      # items = if…end
     if params[:name]
       items = Item.find_all_items_by_name(params[:name])
     elsif params[:min_price] && params[:max_price]
@@ -13,3 +13,5 @@ class Api::V1::ItemsSearchController < ApplicationController
       render json: ItemSerializer.new(items)
   end
 end
+
+private
